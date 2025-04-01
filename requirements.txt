@@ -1,0 +1,6 @@
+yfinance
+ta
+twilio
+pandas
+numpy
+openpyxl
