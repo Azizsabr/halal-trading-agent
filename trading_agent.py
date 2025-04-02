@@ -1,4 +1,4 @@
-# halal_trading_agent.py — Complete Script
+# halal_trading_agent.py
 
 import yfinance as yf
 import pandas as pd
@@ -11,7 +11,7 @@ from twilio.rest import Client
 
 # === SETTINGS ===
 HALAL_TICKERS = ['AAPL', 'MSFT', 'TSLA', 'BTC-USD', '2222.SR']
-SYMBOL = 'AAPL'  # You can change this
+SYMBOL = 'AAPL'
 START_DATE = '2023-01-01'
 END_DATE = '2024-12-31'
 
@@ -33,15 +33,23 @@ def generate_signals(df):
     for i in range(1, len(df)):
         today = df.iloc[i]
         yesterday = df.iloc[i - 1]
-        if today['rsi'] < 30 and today['Close'] > today['ema_20'] and yesterday['Close'] < yesterday['ema_20']:
-            signals.append({
-                'date': today.name.strftime('%Y-%m-%d'),
-                'symbol': SYMBOL,
-                'signal': 'BUY',
-                'price_in': round(today['Close'], 2),
-                'stop_loss': round(today['Close'] * 0.97, 2),
-                'target': round(today['Close'] * 1.05, 2)
-            })
+
+        try:
+            if (
+                float(today['rsi']) < 30 and
+                float(today['Close']) > float(today['ema_20']) and
+                float(yesterday['Close']) < float(yesterday['ema_20'])
+            ):
+                signals.append({
+                    'date': today.name.strftime('%Y-%m-%d'),
+                    'symbol': SYMBOL,
+                    'signal': 'BUY',
+                    'price_in': round(float(today['Close']), 2),
+                    'stop_loss': round(float(today['Close']) * 0.97, 2),
+                    'target': round(float(today['Close']) * 1.05, 2)
+                })
+        except Exception as e:
+            print(f"⚠️ Error on row {i}: {e}")
     return signals
 
 signals = generate_signals(data)
