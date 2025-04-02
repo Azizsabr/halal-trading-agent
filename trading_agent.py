@@ -72,9 +72,9 @@ df_export.to_excel('halal_trading_signals.xlsx', index=False)
 
 # === EMAIL FUNCTION ===
 def send_email():
-    sender = 'your_email@gmail.com'
-    password = 'your_app_password'
-    recipient = 'recipient@example.com'
+    sender = 'abdulaziz.sabr@hotmail.com'
+    password = 'YOUR_APP_PASSWORD_OR_REAL_PASSWORD'
+    recipient = 'YOUR_RECEIVER_EMAIL_HERE'
 
     msg = EmailMessage()
     msg['Subject'] = '📈 Halal Trading Signal Report'
@@ -86,7 +86,8 @@ def send_email():
         msg.add_attachment(f.read(), maintype='application', subtype='vnd.openxmlformats-officedocument.spreadsheetml.sheet', filename='halal_trading_signals.xlsx')
 
     try:
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        with smtplib.SMTP('smtp.office365.com', 587) as smtp:
+            smtp.starttls()
             smtp.login(sender, password)
             smtp.send_message(msg)
         print("✅ Email sent.")
