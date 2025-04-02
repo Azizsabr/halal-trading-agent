@@ -73,26 +73,25 @@ df_export.to_excel('halal_trading_signals.xlsx', index=False)
 # === EMAIL FUNCTION ===
 def send_email():
     sender = 'abdulaziz.sabr@hotmail.com'
-    password = 'YOUR_APP_PASSWORD_OR_REAL_PASSWORD'
-    recipient = 'YOUR_RECEIVER_EMAIL_HERE'
+    password = 'Azooz#2024'
+    recipient = 'abdulaziz.sabur@gmail.com'
 
     msg = EmailMessage()
     msg['Subject'] = '📈 Halal Trading Signal Report'
     msg['From'] = sender
     msg['To'] = recipient
-    msg.set_content('Please find attached the latest trading signals.')
-
-    with open('halal_trading_signals.xlsx', 'rb') as f:
-        msg.add_attachment(f.read(), maintype='application', subtype='vnd.openxmlformats-officedocument.spreadsheetml.sheet', filename='halal_trading_signals.xlsx')
+    msg.set_content('Please find attached the latest halal trading signals.')
 
     try:
+        with open('halal_trading_signals.xlsx', 'rb') as f:
+            msg.add_attachment(
+                f.read(),
+                maintype='application',
+                subtype='vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                filename='halal_trading_signals.xlsx'
+            )
+
         with smtplib.SMTP('smtp.office365.com', 587) as smtp:
-            smtp.starttls()
-            smtp.login(sender, password)
-            smtp.send_message(msg)
-        print("✅ Email sent.")
-    except Exception as e:
-        print(f"❌ Email failed: {e}")
 
 # === WHATSAPP FUNCTION ===
 def send_whatsapp():
