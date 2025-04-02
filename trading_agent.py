@@ -92,6 +92,13 @@ def send_email():
             )
 
         with smtplib.SMTP('smtp.office365.com', 587) as smtp:
+            smtp.starttls()
+            smtp.login(sender, password)
+            smtp.send_message(msg)
+
+        print("✅ Email sent successfully.")
+    except Exception as e:
+        print(f"❌ Failed to send email: {e}")
 
 # === WHATSAPP FUNCTION ===
 def send_whatsapp():
