@@ -25,7 +25,7 @@ else:
 # === DOWNLOAD DATA ===
 data = yf.download(SYMBOL, start=START_DATE, end=END_DATE)
 data['rsi'] = ta.momentum.RSIIndicator(data['Close'].squeeze()).rsi()
-data['ema_20'] = ta.trend.EMAIndicator(data['Close'], window=20).ema_indicator()
+data['ema_20'] = ta.trend.EMAIndicator(data['Close'].squeeze(), window=20).ema_indicator()
 
 # === GENERATE SIGNALS ===
 def generate_signals(df):
