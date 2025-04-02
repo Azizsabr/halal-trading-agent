@@ -121,14 +121,15 @@ def send_email():
 
 # === WHATSAPP FUNCTION ===
 def send_whatsapp():
-    account_sid = 'your_twilio_sid'
-    auth_token = 'your_twilio_token'
+    import os
+    account_sid = os.getenv('TWILIO_SID')
+    auth_token = os.getenv('TWILIO_AUTH_TOKEN')
     client = Client(account_sid, auth_token)
 
     try:
         message = client.messages.create(
-            from_='whatsapp:+14155238886',
-            to='whatsapp:+your_verified_number',
+            from_='whatsapp:+14155238886',  # Twilio sandbox number
+            to='whatsapp:+966596003299',     # your verified number
             body='📊 Halal trading report is ready. Check your email for the Excel file.'
         )
         print("✅ WhatsApp message sent.")
