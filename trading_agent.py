@@ -79,32 +79,43 @@ df_export = pd.DataFrame(log)
 df_export.to_excel('halal_trading_signals.xlsx', index=False)
 
 # === EMAIL FUNCTION ===
-def send_email():
-    sender = 'abdulaziz.sabr@hotmail.com'
-    password = 'Azooz#2024'
-    recipient = 'abdulaziz.sabur@gmail.com'
+import os
+import sendgrid
+from sendgrid.helpers.mail import Mail, Email, To, Content
 
-    msg = EmailMessage()
-    msg['Subject'] = '📈 Halal Trading Signal Report'
-    msg['From'] = sender
-    msg['To'] = recipient
-    msg.set_content('Please find attached the latest halal trading signals.')
+# === EMAIL FUNCTION WITH SENDGRID ===
+def send_email():
+    api_key = os.getenv('SENDGRID_API_KEY')
+    from_email = os.getenv('EMAIL_FROM')
+    to_email = os.getenv('EMAIL_TO')
+
+    sg = sendgrid.SendGridAPIClient(api_key=api_key)
+
+    message = Mail(
+        from_email=Email(from_email),
+        to_emails=To(to_email),
+        subject='📈 Halal Trading Signal Report',
+        plain_text_content='Please find attached the latest halal trading signals.'
+    )
 
     try:
+        # Attach Excel file
         with open('halal_trading_signals.xlsx', 'rb') as f:
-            msg.add_attachment(
-                f.read(),
-                maintype='application',
-                subtype='vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                filename='halal_trading_signals.xlsx'
-            )
+            data = f.read()
+            import base64
+            encoded_file = base64.b64encode(data).decode()
 
-        with smtplib.SMTP('smtp.office365.com', 587) as smtp:
-            smtp.starttls()
-            smtp.login(sender, password)
-            smtp.send_message(msg)
+        from sendgrid.helpers.mail import Attachment, FileContent, FileName, FileType, Disposition
+        attachment = Attachment()
+        attachment.file_content = FileContent(encoded_file)
+        attachment.file_type = FileType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        attachment.file_name = FileName('halal_trading_signals.xlsx')
+        attachment.disposition = Disposition('attachment')
+        message.attachment = attachment
 
-        print("✅ Email sent successfully.")
+        sg.send(message)
+        print("✅ Email sent successfully via SendGrid.")
+
     except Exception as e:
         print(f"❌ Failed to send email: {e}")
 
